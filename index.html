@@ -13,7 +13,7 @@
         /* Yazı tipini tüm sayfaya uyguluyoruz ve kaydırma çubuğunu kesin olarak gizliyoruz */
         html, body {
             font-family: 'Satoshi', sans-serif;
-            background-color: #000000;
+            /* background-color: #000000; <--- Görsellerin görünmesi için bu satırı sildik */
             color: #ffffff;
             /* Firefox için kaydırma çubuğunu gizle */
             scrollbar-width: none !important; 
@@ -27,9 +27,55 @@
             width: 0 !important;
             height: 0 !important;
         }
+
+        /* 4K Hissiyatlı, yoğun ve dinamik gerçekçi film greni */
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: noiseJitter 0.2s infinite;
+        }
+
+        /* Grenin canlı durması için mikroskobik titreme animasyonu */
+        @keyframes noiseJitter {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-1%, 1%); }
+            40% { transform: translate(1%, -1%); }
+            60% { transform: translate(-2%, -2%); }
+            80% { transform: translate(2%, 2%); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Soldan sağa sinematik kayma (Pan) animasyonu */
+        @keyframes panHorizontal {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .animate-bg-pan {
+            /* Görselin genişliğini ekranın 1.5 katı yaparak kayma alanı yaratıyoruz */
+            background-size: 150vw auto; 
+            animation: panHorizontal 20s ease-in-out infinite alternate;
+        }
+        
+        /* Mobil cihazlar için görselin yüksekliğini koruma düzeltmesi */
+        @media (max-width: 768px) {
+            .animate-bg-pan {
+                background-size: auto 150vh; 
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-16 px-6 antialiased selection:bg-gray-700 selection:text-white">
+<body class="min-h-screen flex flex-col items-center py-16 px-6 antialiased selection:bg-gray-700 selection:text-white relative z-0 overflow-x-hidden">
+
+    <!-- Siyah arka plan garantisi -->
+    <div class="fixed inset-0 z-[-4] bg-black"></div>
+    
+    <!-- Arka Plan Görseli (Yatay Kayma Animasyonlu ve Senin İsteğin Üzerine Bulanıklaştırılmış) -->
+    <!-- Bulanıklık (blur-xl) eklendi, kenarlardan beyazlık sızmasın diye scale-110 ile büyütüldü -->
+    <div class="fixed inset-0 z-[-3] bg-no-repeat animate-bg-pan blur-xl scale-110" style="background-image: url('https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/backgroundphoto.png');"></div>
+    
+    <!-- Karartma katmanı senin anlamsız ısrarın yüzünden kaldırıldı -->
+    
+    <!-- Gren (Noise) Katmanı (Orta yol bulundu: soft-light blend modu ve dengeli opaklık) -->
+    <div class="fixed -inset-[10%] z-[-1] bg-noise opacity-30 pointer-events-none mix-blend-soft-light"></div>
 
     <!-- Profil Bölümü -->
     <div class="flex flex-col items-center mb-10 w-full max-w-md">
@@ -45,7 +91,7 @@
             </div>
             <!-- Mavi Tik Rozeti -->
             <div class="absolute bottom-0 right-0" title="Doğrulanmış">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1d9bf0" class="w-8 h-8 bg-black rounded-full border-[3px] border-black">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1d9bf0" class="w-8 h-8 drop-shadow-md">
                     <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
                 </svg>
             </div>
@@ -64,63 +110,61 @@
     <div class="w-full max-w-[400px] flex flex-col gap-4">
         
         <a href="https://kick.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">kick</span>
         </a>
 
         <a href="https://www.youtube.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">youtube</span>
         </a>
 
         <a href="https://www.instagram.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">instagram</span>
         </a>
 
         <a href="https://x.com/freddiechill_" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">x/twitter</span>
         </a>
 
         <a href="https://www.tiktok.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">tiktok</span>
         </a>
 
         <a href="https://discord.gg/xkVdrvhGYe" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">discord</span>
         </a>
 
         <a href="https://open.spotify.com/user/gxg38hjsavm5uo1y1gicf1oj1" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">spotify</span>
         </a>
 
         <a href="https://letterboxd.com/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">letterboxd</span>
         </a>
 
         <a href="https://www.pinterest.com/freddieflix" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">pinterest</span>
         </a>
 
         <a href="https://steamcommunity.com/id/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
             <span class="font-semibold text-zinc-200 group-hover:text-white">steam</span>
         </a>
 
     </div>
 
     <!-- Alt Bilgi (Opsiyonel, sade tutmak için silebilirsin) -->
-    <div class="mt-12 text-zinc-600 text-xs">
+    <div class="mt-12 text-zinc-400 text-xs drop-shadow-md">
         &copy; 2026 freddie
     </div>
 
 </body>
 </html>
-
-
