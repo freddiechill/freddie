@@ -69,7 +69,8 @@
     <!-- Bulanıklık performansı etkilediği için boyut ve transform ile optimize edildi -->
     <div class="fixed -inset-[10%] z-[-3] bg-no-repeat animate-bg-pan blur-xl transform-gpu" style="background-image: url('https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/backgroundphoto.png');"></div>
     
-    <!-- Karartma katmanı senin anlamsız ısrarın yüzünden kaldırıldı -->
+    <!-- Akıllı Karartma Katmanı: Mobilde %40, Bilgisayarda (sm ve üzeri) %20 karartma uygular -->
+    <div class="fixed inset-0 z-[-2] bg-black/40 sm:bg-black/20 pointer-events-none"></div>
     
     <!-- Gren (Noise) Katmanı (Orta yol bulundu: soft-light blend modu ve dengeli opaklık) -->
     <div class="fixed -inset-[15%] z-[-1] bg-noise opacity-30 pointer-events-none mix-blend-soft-light transform-gpu"></div>
