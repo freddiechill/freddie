@@ -15,21 +15,15 @@
             font-family: 'Satoshi', sans-serif;
             background-color: #000000;
             color: #ffffff;
+            /* Firefox için kaydırma çubuğunu gizle */
+            scrollbar-width: none; 
+            /* IE ve Edge için kaydırma çubuğunu gizle */
+            -ms-overflow-style: none; 
         }
         
-        /* Özel kaydırma çubuğu (opsiyonel ama şık durur) */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #000000;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333333;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555555;
+        /* Chrome, Safari ve Opera için kaydırma çubuğunu gizle */
+        body::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
