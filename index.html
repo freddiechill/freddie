@@ -31,35 +31,32 @@
         /* 4K Hissiyatlı, yoğun ve dinamik gerçekçi film greni */
         .bg-noise {
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            animation: noiseJitter 0.2s infinite;
+            /* Animasyon GPU'ya taşındı */
+            will-change: transform;
+            animation: noiseJitter 0.2s infinite steps(2);
         }
 
-        /* Grenin canlı durması için mikroskobik titreme animasyonu */
+        /* Grenin canlı durması için mikroskobik titreme animasyonu - Performans için optimize edildi */
         @keyframes noiseJitter {
-            0% { transform: translate(0, 0); }
-            20% { transform: translate(-1%, 1%); }
-            40% { transform: translate(1%, -1%); }
-            60% { transform: translate(-2%, -2%); }
-            80% { transform: translate(2%, 2%); }
-            100% { transform: translate(0, 0); }
+            0% { transform: translate3d(0, 0, 0); }
+            20% { transform: translate3d(-1%, 1%, 0); }
+            40% { transform: translate3d(1%, -1%, 0); }
+            60% { transform: translate3d(-2%, -2%, 0); }
+            80% { transform: translate3d(2%, 2%, 0); }
+            100% { transform: translate3d(0, 0, 0); }
         }
 
-        /* Soldan sağa sinematik kayma (Pan) animasyonu */
+        /* GPU dostu Soldan sağa sinematik kayma (Pan) animasyonu */
         @keyframes panHorizontal {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+            0% { transform: translate3d(-5%, 0, 0) scale(1.15); }
+            100% { transform: translate3d(5%, 0, 0) scale(1.15); }
         }
         .animate-bg-pan {
-            /* Görselin genişliğini ekranın 1.5 katı yaparak kayma alanı yaratıyoruz */
-            background-size: 150vw auto; 
+            /* Arka plan pozisyonu yerine Transform kullanarak GPU'yu rahatlatıyoruz */
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
             animation: panHorizontal 20s ease-in-out infinite alternate;
-        }
-        
-        /* Mobil cihazlar için görselin yüksekliğini koruma düzeltmesi */
-        @media (max-width: 768px) {
-            .animate-bg-pan {
-                background-size: auto 150vh; 
-            }
         }
     </style>
 </head>
@@ -68,19 +65,19 @@
     <!-- Siyah arka plan garantisi -->
     <div class="fixed inset-0 z-[-4] bg-black"></div>
     
-    <!-- Arka Plan Görseli (Yatay Kayma Animasyonlu ve Senin İsteğin Üzerine Bulanıklaştırılmış) -->
-    <!-- Bulanıklık (blur-xl) eklendi, kenarlardan beyazlık sızmasın diye scale-110 ile büyütüldü -->
-    <div class="fixed inset-0 z-[-3] bg-no-repeat animate-bg-pan blur-xl scale-110" style="background-image: url('https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/backgroundphoto.png');"></div>
+    <!-- Arka Plan Görseli (GPU Hızlandırmalı Yatay Kayma Animasyonlu) -->
+    <!-- Bulanıklık performansı etkilediği için boyut ve transform ile optimize edildi -->
+    <div class="fixed -inset-[10%] z-[-3] bg-no-repeat animate-bg-pan blur-xl transform-gpu" style="background-image: url('https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/backgroundphoto.png');"></div>
     
     <!-- Karartma katmanı senin anlamsız ısrarın yüzünden kaldırıldı -->
     
     <!-- Gren (Noise) Katmanı (Orta yol bulundu: soft-light blend modu ve dengeli opaklık) -->
-    <div class="fixed -inset-[10%] z-[-1] bg-noise opacity-30 pointer-events-none mix-blend-soft-light"></div>
+    <div class="fixed -inset-[15%] z-[-1] bg-noise opacity-30 pointer-events-none mix-blend-soft-light transform-gpu"></div>
 
     <!-- Profil Bölümü -->
-    <div class="flex flex-col items-center mb-10 w-full max-w-md">
+    <div class="flex flex-col items-center mb-10 w-full max-w-md relative z-10">
         <!-- Profil Fotoğrafı ve Rozet -->
-        <div class="relative mb-5">
+        <div class="relative mb-5 transform-gpu">
             <div class="w-28 h-28 rounded-full overflow-hidden border-2 border-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
                 <img 
                     src="https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/freddiepp.png" 
@@ -107,62 +104,63 @@
     </div>
 
     <!-- Linkler Bölümü -->
-    <div class="w-full max-w-[400px] flex flex-col gap-4">
+    <div class="w-full max-w-[400px] flex flex-col gap-4 relative z-10">
         
+        <!-- Butonlara transform-gpu eklendi. Bu, kaydırırken butonların arka planla karışıp bozulmasını/yırtılmasını engeller -->
         <a href="https://kick.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">kick</span>
         </a>
 
         <a href="https://www.youtube.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">youtube</span>
         </a>
 
         <a href="https://www.instagram.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">instagram</span>
         </a>
 
         <a href="https://x.com/freddiechill_" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">x/twitter</span>
         </a>
 
         <a href="https://www.tiktok.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">tiktok</span>
         </a>
 
         <a href="https://discord.gg/xkVdrvhGYe" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">discord</span>
         </a>
 
         <a href="https://open.spotify.com/user/gxg38hjsavm5uo1y1gicf1oj1" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">spotify</span>
         </a>
 
         <a href="https://letterboxd.com/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">letterboxd</span>
         </a>
 
         <a href="https://www.pinterest.com/freddieflix" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">pinterest</span>
         </a>
 
         <a href="https://steamcommunity.com/id/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300">
+           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
             <span class="font-semibold text-zinc-200 group-hover:text-white">steam</span>
         </a>
 
     </div>
 
-    <!-- Alt Bilgi (Opsiyonel, sade tutmak için silebilirsin) -->
-    <div class="mt-12 text-zinc-400 text-xs drop-shadow-md">
+    <!-- Alt Bilgi -->
+    <div class="mt-12 pb-8 text-zinc-400 text-xs drop-shadow-md text-center relative z-10 w-full">
         &copy; 2026 freddie
     </div>
 
