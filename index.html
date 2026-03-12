@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>freddie | Linkler</title>
+    <!-- Tailwind CSS (Hızlı ve modern stillendirme için) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Satoshi Font (Fontshare üzerinden) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Yazı tipini tüm sayfaya uyguluyoruz */
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        /* Özel kaydırma çubuğu (opsiyonel ama şık durur) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-16 px-6 antialiased selection:bg-gray-700 selection:text-white">
+
+    <!-- Profil Bölümü -->
+    <div class="flex flex-col items-center mb-10 w-full max-w-md">
+        <!-- Profil Fotoğrafı ve Rozet -->
+        <div class="relative mb-5">
+            <div class="w-28 h-28 rounded-full overflow-hidden border-2 border-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+                <img 
+                    src="https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/freddiepp.png" 
+                    alt="freddie profil" 
+                    class="w-full h-full object-cover"
+                    onerror="this.src='https://ui-avatars.com/api/?name=freddie&background=random&color=fff'"
+                >
+            </div>
+            <!-- Mavi Tik Rozeti -->
+            <div class="absolute bottom-0 right-0" title="Doğrulanmış">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1d9bf0" class="w-8 h-8 bg-black rounded-full border-[3px] border-black">
+                    <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+        
+        <!-- İsim -->
+        <h1 class="text-2xl font-bold tracking-tight mb-1">freddie</h1>
+        
+        <!-- E-posta -->
+        <a href="mailto:freddiechill@outlook.com" class="text-zinc-400 text-sm font-medium hover:text-white transition-colors duration-300">
+            freddiechill@outlook.com
+        </a>
+    </div>
+
+    <!-- Linkler Bölümü -->
+    <div class="w-full max-w-[400px] flex flex-col gap-4">
+        
+        <a href="https://kick.com/freddiechill" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">kick</span>
+        </a>
+
+        <a href="https://www.youtube.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">youtube</span>
+        </a>
+
+        <a href="https://www.instagram.com/freddiechill" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">instagram</span>
+        </a>
+
+        <a href="https://x.com/freddiechill_" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">x/twitter</span>
+        </a>
+
+        <a href="https://www.tiktok.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">tiktok</span>
+        </a>
+
+        <a href="https://discord.gg/xkVdrvhGYe" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">discord</span>
+        </a>
+
+        <a href="https://open.spotify.com/user/gxg38hjsavm5uo1y1gicf1oj1?si=a9f515523b124619" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">spotify</span>
+        </a>
+
+        <a href="https://letterboxd.com/freddiechill/" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">letterboxd</span>
+        </a>
+
+        <a href="https://www.pinterest.com/freddieflix" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">pinterest</span>
+        </a>
+
+        <a href="https://steamcommunity.com/id/freddiechill/" target="_blank" rel="noopener noreferrer" 
+           class="group flex items-center justify-center w-full py-4 px-6 bg-[#0a0a0a] border border-zinc-800 rounded-[2rem] hover:bg-zinc-800 hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300">
+            <span class="font-semibold text-zinc-200 group-hover:text-white">steam</span>
+        </a>
+
+    </div>
+
+    <!-- Alt Bilgi (Opsiyonel, sade tutmak için silebilirsin) -->
+    <div class="mt-12 text-zinc-600 text-xs">
+        &copy; 2026 freddie
+    </div>
+
+</body>
+</html>
