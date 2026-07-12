@@ -4,82 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>freddie</title>
-    <!-- Tailwind CSS (Hızlı ve modern stillendirme için) -->
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Satoshi Font (Fontshare üzerinden) -->
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap" rel="stylesheet">
     
     <style>
-        /* Yazı tipini tüm sayfaya uyguluyoruz ve kaydırma çubuğunu kesin olarak gizliyoruz */
+        /* Yazı tipi olarak Satoshi ayarlıyoruz ve kaydırma çubuğunu gizliyoruz */
         html, body {
             font-family: 'Satoshi', sans-serif;
-            /* background-color: #000000; <--- Görsellerin görünmesi için bu satırı sildik */
-            color: #ffffff;
-            /* Firefox için kaydırma çubuğunu gizle */
+            background-color: #1A1514; /* İstenen düz renk */
+            color: #d1cfc0; /* İstenilen özel renk */
             scrollbar-width: none !important; 
-            /* IE ve Edge için kaydırma çubuğunu gizle */
             -ms-overflow-style: none !important; 
         }
         
-        /* Chrome, Safari ve Opera için kaydırma çubuğunu gizle */
         html::-webkit-scrollbar, body::-webkit-scrollbar {
             display: none !important;
             width: 0 !important;
             height: 0 !important;
         }
 
-        /* 4K Hissiyatlı, yoğun ve dinamik gerçekçi film greni */
+        /* Ufak ve performansı yormayan sabit gren efekti */
         .bg-noise {
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            /* Animasyon GPU'ya taşındı */
-            will-change: transform;
-            animation: noiseJitter 0.2s infinite steps(2);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            mix-blend-mode: overlay;
+            pointer-events: none;
         }
 
-        /* Grenin canlı durması için mikroskobik titreme animasyonu - Performans için optimize edildi */
-        @keyframes noiseJitter {
-            0% { transform: translate3d(0, 0, 0); }
-            20% { transform: translate3d(-1%, 1%, 0); }
-            40% { transform: translate3d(1%, -1%, 0); }
-            60% { transform: translate3d(-2%, -2%, 0); }
-            80% { transform: translate3d(2%, 2%, 0); }
-            100% { transform: translate3d(0, 0, 0); }
+        /* SSS: Butonun temel geçiş özellikleri (JS destekli interaktif sıvılaşma için CSS değişkenleri kullanılıyor) */
+        .blur-target, .link-btn {
+            will-change: filter, opacity, transform, border-radius;
         }
 
-        /* GPU dostu Soldan sağa sinematik kayma (Pan) animasyonu */
-        @keyframes panHorizontal {
-            0% { transform: translate3d(-5%, 0, 0) scale(1.15); }
-            100% { transform: translate3d(5%, 0, 0) scale(1.15); }
+        .link-btn {
+            border-radius: var(--rx, 24px) var(--ry, 24px) var(--rz, 24px) var(--rw, 24px);
+            transition: border-radius 0.15s ease-out, filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease, background-color 0.4s ease, border-color 0.4s ease;
         }
-        .animate-bg-pan {
-            /* Arka plan pozisyonu yerine Transform kullanarak GPU'yu rahatlatıyoruz */
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-            animation: panHorizontal 20s ease-in-out infinite alternate;
+
+        .link-btn:not(:hover) {
+            transition: border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease, opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Sıvılaşan, bulanıklaşan ve bozulan iç yazı (Motion/Slime Blur) */
+        .link-text {
+            display: inline-block;
+            transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--scale, 1)) skew(var(--skewX, 0deg), var(--skewY, 0deg));
+            filter: blur(var(--text-blur, 0px));
+            text-shadow: 
+                var(--ts-1-x, 0px) var(--ts-1-y, 0px) calc(var(--text-blur, 0px) + 2px) rgba(209, 207, 192, 0.5),
+                var(--ts-2-x, 0px) var(--ts-2-y, 0px) calc(var(--text-blur, 0px) + 4px) rgba(209, 207, 192, 0.3);
+            transition: transform 0.15s ease-out, filter 0.15s ease-out, text-shadow 0.15s ease-out;
+            will-change: transform, filter, text-shadow;
+        }
+
+        .link-btn:not(:hover) .link-text {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease, text-shadow 0.6s ease;
+        }
+
+        /* Butonun hover anındaki davranışı */
+        .link-btn:hover {
+            background-color: rgba(209, 207, 192, 0.08); /* Biraz daha aydınlanır */
+            transform: scale(1.05); /* Üstüne gelince hafifçe büyür */
+            z-index: 50;
+            border-color: rgba(209, 207, 192, 0.2);
+        }
+
+        /* MODERN ODAKLANMA EFEKTİ (Herhangi bir link-btn hover edildiğinde tetiklenir) */
+        /* 1- Profil ve Footer bölümlerini bulanıklaştırır */
+        body:has(.link-btn:hover) .blur-target {
+            filter: blur(8px);
+            opacity: 0.3;
+            transform: scale(0.96);
+        }
+        
+        /* 2- O an hover EDİLMEYEN diğer tüm butonları bulanıklaştırır */
+        body:has(.link-btn:hover) .link-btn:not(:hover) {
+            filter: blur(8px);
+            opacity: 0.3;
+            transform: scale(0.96);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-16 px-6 antialiased selection:bg-gray-700 selection:text-white relative z-0 overflow-x-hidden">
 
-    <!-- Siyah arka plan garantisi -->
-    <div class="fixed inset-0 z-[-4] bg-black"></div>
-    
-    <!-- Arka Plan Görseli (GPU Hızlandırmalı Yatay Kayma Animasyonlu) -->
-    <!-- Bulanıklık performansı etkilediği için boyut ve transform ile optimize edildi -->
-    <div class="fixed -inset-[10%] z-[-3] bg-no-repeat animate-bg-pan blur-xl transform-gpu" style="background-image: url('https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/backgroundphoto.png');"></div>
-    
-    <!-- Akıllı Karartma Katmanı: Mobilde %40, Bilgisayarda (sm ve üzeri) %20 karartma uygular -->
-    <div class="fixed inset-0 z-[-2] bg-black/40 sm:bg-black/20 pointer-events-none"></div>
-    
-    <!-- Gren (Noise) Katmanı (Orta yol bulundu: soft-light blend modu ve dengeli opaklık) -->
-    <div class="fixed -inset-[15%] z-[-1] bg-noise opacity-30 pointer-events-none mix-blend-soft-light transform-gpu"></div>
+    <!-- Gren (Noise) Katmanı (Statik yapıldı, sistemi kasmaması için) -->
+    <div class="fixed inset-0 z-[-1] bg-noise"></div>
 
-    <!-- Profil Bölümü -->
-    <div class="flex flex-col items-center mb-10 w-full max-w-md relative z-10">
+    <!-- Profil Bölümü (blur-target sınıfı sayesinde buton hover olduğunda bulanıklaşacak) -->
+    <div class="blur-target flex flex-col items-center mb-10 w-full max-w-md relative z-10 origin-center">
         <!-- Profil Fotoğrafı ve Rozet -->
         <div class="relative mb-5 transform-gpu">
-            <div class="w-28 h-28 rounded-full overflow-hidden border-2 border-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+            <div class="w-28 h-28 rounded-full overflow-hidden border-2 border-zinc-800 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
                 <img 
                     src="https://raw.githubusercontent.com/freddiechill/gorsel-depom/refs/heads/main/freddiepp.png" 
                     alt="freddie profil" 
@@ -96,74 +115,140 @@
         </div>
         
         <!-- İsim -->
-        <h1 class="text-2xl font-bold tracking-tight mb-1">freddie</h1>
+        <h1 class="text-3xl font-bold tracking-tight mb-1">freddie</h1>
         
         <!-- E-posta -->
-        <a href="mailto:freddiechill@outlook.com" class="text-zinc-400 text-sm font-medium hover:text-white transition-colors duration-300">
+        <a href="mailto:freddiechill@outlook.com" class="opacity-60 text-sm font-medium hover:opacity-100 transition-opacity duration-300">
             freddiechill@outlook.com
         </a>
     </div>
 
     <!-- Linkler Bölümü -->
-    <div class="w-full max-w-[400px] flex flex-col gap-4 relative z-10">
+    <div class="w-full max-w-[400px] flex flex-col gap-4 relative z-10 perspective-1000">
         
-        <!-- Butonlara transform-gpu eklendi. Bu, kaydırırken butonların arka planla karışıp bozulmasını/yırtılmasını engeller -->
         <a href="https://kick.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">kick</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">kick</span>
         </a>
 
         <a href="https://www.youtube.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">youtube</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">youtube</span>
         </a>
 
         <a href="https://www.instagram.com/freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">instagram</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">instagram</span>
         </a>
 
         <a href="https://x.com/freddiechill_" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">x/twitter</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">x/twitter</span>
         </a>
 
         <a href="https://www.tiktok.com/@freddiechill" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">tiktok</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">tiktok</span>
         </a>
 
         <a href="https://discord.gg/xkVdrvhGYe" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">discord</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">discord</span>
         </a>
 
         <a href="https://open.spotify.com/user/gxg38hjsavm5uo1y1gicf1oj1" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">spotify</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">spotify</span>
         </a>
 
         <a href="https://letterboxd.com/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">letterboxd</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">letterboxd</span>
         </a>
 
         <a href="https://www.pinterest.com/freddieflix" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">pinterest</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">pinterest</span>
         </a>
 
         <a href="https://steamcommunity.com/id/freddiechill/" target="_blank" rel="noopener noreferrer" 
-           class="group flex items-center justify-center w-full py-4 px-6 bg-black/30 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[2rem] hover:bg-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 transform-gpu hover:scale-[1.02] active:scale-95">
-            <span class="font-semibold text-zinc-200 group-hover:text-white">steam</span>
+           class="link-btn group flex items-center justify-center w-full py-4 px-6 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] relative">
+            <span class="link-text font-semibold">steam</span>
         </a>
 
     </div>
 
-    <!-- Alt Bilgi -->
-    <div class="mt-12 pb-8 text-zinc-400 text-xs drop-shadow-md text-center relative z-10 w-full">
+    <!-- Alt Bilgi (blur-target sınıfı ile bulanıklaşmaya dahil edildi) -->
+    <div class="blur-target mt-14 pb-8 opacity-50 font-medium text-xs drop-shadow-md text-center relative z-10 w-full origin-center">
         &copy; 2026 freddie
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll('.link-btn');
+
+            buttons.forEach(btn => {
+                const textSpan = btn.querySelector('.link-text');
+
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+
+                    // Fare pozisyonuna göre buton köşelerinin esneme (erime) katsayıları
+                    const tl = 16 + (100 - xPercent) * 0.25 + (100 - yPercent) * 0.25;
+                    const tr = 16 + xPercent * 0.25 + (100 - yPercent) * 0.25;
+                    const br = 16 + xPercent * 0.25 + yPercent * 0.25;
+                    const bl = 16 + (100 - xPercent) * 0.25 + yPercent * 0.25;
+
+                    btn.style.setProperty('--rx', `${tl}px`);
+                    btn.style.setProperty('--ry', `${tr}px`);
+                    btn.style.setProperty('--rz', `${br}px`);
+                    btn.style.setProperty('--rw', `${bl}px`);
+                    
+                    // İçindeki yazının farenin olduğu bölgeye doğru esnemesi/çekilmesi
+                    const moveX = (xPercent - 50) * 0.25; 
+                    const moveY = (yPercent - 50) * 0.25;
+                    
+                    btn.style.setProperty('--tx', `${moveX}px`);
+                    btn.style.setProperty('--ty', `${moveY}px`);
+                    btn.style.setProperty('--skewX', `${moveX * 0.15}deg`);
+                    btn.style.setProperty('--skewY', `${moveY * 0.15}deg`);
+                    btn.style.setProperty('--scale', `1.05`);
+
+                    // Yazının sıvı gibi dağılması/bulanıklaşması (motion blur hissi)
+                    const blurIntensity = (Math.abs(moveX) + Math.abs(moveY)) * 0.2; // Fare merkezden uzaklaştıkça bulanıklık artar
+                    btn.style.setProperty('--text-blur', `${blurIntensity}px`);
+                    btn.style.setProperty('--ts-1-x', `${moveX * 0.8}px`);
+                    btn.style.setProperty('--ts-1-y', `${moveY * 0.8}px`);
+                    btn.style.setProperty('--ts-2-x', `${-moveX * 0.4}px`);
+                    btn.style.setProperty('--ts-2-y', `${-moveY * 0.4}px`);
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    // İmleç çıkınca varsayılan dengeli ayarlara dönüş
+                    btn.style.setProperty('--rx', `24px`);
+                    btn.style.setProperty('--ry', `24px`);
+                    btn.style.setProperty('--rz', `24px`);
+                    btn.style.setProperty('--rw', `24px`);
+                    btn.style.setProperty('--tx', `0px`);
+                    btn.style.setProperty('--ty', `0px`);
+                    btn.style.setProperty('--skewX', `0deg`);
+                    btn.style.setProperty('--skewY', `0deg`);
+                    btn.style.setProperty('--scale', `1`);
+                    
+                    // Bulanıklık ve dağılmayı sıfırla
+                    btn.style.setProperty('--text-blur', `0px`);
+                    btn.style.setProperty('--ts-1-x', `0px`);
+                    btn.style.setProperty('--ts-1-y', `0px`);
+                    btn.style.setProperty('--ts-2-x', `0px`);
+                    btn.style.setProperty('--ts-2-y', `0px`);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
