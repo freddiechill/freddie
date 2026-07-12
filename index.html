@@ -40,6 +40,11 @@
             will-change: filter, opacity, transform, border-radius;
         }
 
+        /* Diğer alanların (profil, footer vs.) yumuşak geçişle bulanıklaşması için fade efekti */
+        .blur-target {
+            transition: filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+        }
+
         .link-btn {
             border-radius: var(--rx, 24px) var(--ry, 24px) var(--rz, 24px) var(--rw, 24px);
             transition: border-radius 0.15s ease-out, filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease, background-color 0.4s ease, border-color 0.4s ease;
@@ -219,13 +224,13 @@
                     btn.style.setProperty('--skewY', `${moveY * 0.15}deg`);
                     btn.style.setProperty('--scale', `1.05`);
 
-                    // Yazının sıvı gibi dağılması/bulanıklaşması (motion blur hissi)
-                    const blurIntensity = (Math.abs(moveX) + Math.abs(moveY)) * 0.2; // Fare merkezden uzaklaştıkça bulanıklık artar
+                    // Yazının sıvı gibi dağılması/bulanıklaşması (Daha estetik olması için bulanıklık değeri düşürüldü)
+                    const blurIntensity = (Math.abs(moveX) + Math.abs(moveY)) * 0.08; 
                     btn.style.setProperty('--text-blur', `${blurIntensity}px`);
-                    btn.style.setProperty('--ts-1-x', `${moveX * 0.8}px`);
-                    btn.style.setProperty('--ts-1-y', `${moveY * 0.8}px`);
-                    btn.style.setProperty('--ts-2-x', `${-moveX * 0.4}px`);
-                    btn.style.setProperty('--ts-2-y', `${-moveY * 0.4}px`);
+                    btn.style.setProperty('--ts-1-x', `${moveX * 0.4}px`);
+                    btn.style.setProperty('--ts-1-y', `${moveY * 0.4}px`);
+                    btn.style.setProperty('--ts-2-x', `${-moveX * 0.2}px`);
+                    btn.style.setProperty('--ts-2-y', `${-moveY * 0.2}px`);
                 });
                 
                 btn.addEventListener('mouseleave', () => {
