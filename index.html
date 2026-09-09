@@ -35,62 +35,19 @@
             pointer-events: none;
         }
 
-        /* SSS: Butonun temel geçiş özellikleri (JS destekli interaktif sıvılaşma için CSS değişkenleri kullanılıyor) */
-        .blur-target, .link-btn {
-            will-change: filter, opacity, transform, border-radius;
-        }
-
-        /* Diğer alanların (profil, footer vs.) yumuşak geçişle bulanıklaşması için fade efekti */
-        .blur-target {
-            transition: filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
-        }
-
+        /* Butonun temel geçiş özellikleri (Sadeleştirildi) */
         .link-btn {
-            border-radius: var(--rx, 24px) var(--ry, 24px) var(--rz, 24px) var(--rw, 24px);
-            transition: border-radius 0.15s ease-out, filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease, background-color 0.4s ease, border-color 0.4s ease;
+            border-radius: 24px;
+            transition: transform 0.2s ease-out, background-color 0.3s ease, border-color 0.3s ease;
+            will-change: transform;
         }
 
-        .link-btn:not(:hover) {
-            transition: border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease, opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease, border-color 0.4s ease;
-        }
-
-        /* Sıvılaşan, bulanıklaşan ve bozulan iç yazı (Motion/Slime Blur) */
-        .link-text {
-            display: inline-block;
-            transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--scale, 1)) skew(var(--skewX, 0deg), var(--skewY, 0deg));
-            filter: blur(var(--text-blur, 0px));
-            text-shadow: 
-                var(--ts-1-x, 0px) var(--ts-1-y, 0px) calc(var(--text-blur, 0px) + 2px) rgba(209, 207, 192, 0.5),
-                var(--ts-2-x, 0px) var(--ts-2-y, 0px) calc(var(--text-blur, 0px) + 4px) rgba(209, 207, 192, 0.3);
-            transition: transform 0.15s ease-out, filter 0.15s ease-out, text-shadow 0.15s ease-out;
-            will-change: transform, filter, text-shadow;
-        }
-
-        .link-btn:not(:hover) .link-text {
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease, text-shadow 0.6s ease;
-        }
-
-        /* Butonun hover anındaki davranışı */
+        /* Butonun hover anındaki davranışı (Sadece büyüme ve renk değişimi) */
         .link-btn:hover {
             background-color: rgba(209, 207, 192, 0.08); /* Biraz daha aydınlanır */
             transform: scale(1.05); /* Üstüne gelince hafifçe büyür */
             z-index: 50;
             border-color: rgba(209, 207, 192, 0.2);
-        }
-
-        /* MODERN ODAKLANMA EFEKTİ (Herhangi bir link-btn hover edildiğinde tetiklenir) */
-        /* 1- Profil ve Footer bölümlerini bulanıklaştırır */
-        body:has(.link-btn:hover) .blur-target {
-            filter: blur(8px);
-            opacity: 0.3;
-            transform: scale(0.96);
-        }
-        
-        /* 2- O an hover EDİLMEYEN diğer tüm butonları bulanıklaştırır */
-        body:has(.link-btn:hover) .link-btn:not(:hover) {
-            filter: blur(8px);
-            opacity: 0.3;
-            transform: scale(0.96);
         }
     </style>
 </head>
@@ -99,8 +56,8 @@
     <!-- Gren (Noise) Katmanı (Statik yapıldı, sistemi kasmaması için) -->
     <div class="fixed inset-0 z-[-1] bg-noise"></div>
 
-    <!-- Profil Bölümü (blur-target sınıfı sayesinde buton hover olduğunda bulanıklaşacak) -->
-    <div class="blur-target flex flex-col items-center mb-10 w-full max-w-md relative z-10 origin-center">
+    <!-- Profil Bölümü -->
+    <div class="flex flex-col items-center mb-10 w-full max-w-md relative z-10 origin-center">
         <!-- Profil Fotoğrafı ve Rozet -->
         <div class="relative mb-5 transform-gpu">
             <div class="w-28 h-28 rounded-full overflow-hidden border-2 border-zinc-800 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
@@ -183,77 +140,10 @@
 
     </div>
 
-    <!-- Alt Bilgi (blur-target sınıfı ile bulanıklaşmaya dahil edildi) -->
-    <div class="blur-target mt-14 pb-8 opacity-50 font-medium text-xs drop-shadow-md text-center relative z-10 w-full origin-center">
+    <!-- Alt Bilgi -->
+    <div class="mt-14 pb-8 opacity-50 font-medium text-xs drop-shadow-md text-center relative z-10 w-full origin-center">
         &copy; 2026 freddie
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const buttons = document.querySelectorAll('.link-btn');
-
-            buttons.forEach(btn => {
-                const textSpan = btn.querySelector('.link-text');
-
-                btn.addEventListener('mousemove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = e.clientX - rect.left; 
-                    const y = e.clientY - rect.top;  
-                    
-                    const xPercent = (x / rect.width) * 100;
-                    const yPercent = (y / rect.height) * 100;
-
-                    // Fare pozisyonuna göre buton köşelerinin esneme (erime) katsayıları
-                    const tl = 16 + (100 - xPercent) * 0.25 + (100 - yPercent) * 0.25;
-                    const tr = 16 + xPercent * 0.25 + (100 - yPercent) * 0.25;
-                    const br = 16 + xPercent * 0.25 + yPercent * 0.25;
-                    const bl = 16 + (100 - xPercent) * 0.25 + yPercent * 0.25;
-
-                    btn.style.setProperty('--rx', `${tl}px`);
-                    btn.style.setProperty('--ry', `${tr}px`);
-                    btn.style.setProperty('--rz', `${br}px`);
-                    btn.style.setProperty('--rw', `${bl}px`);
-                    
-                    // İçindeki yazının farenin olduğu bölgeye doğru esnemesi/çekilmesi
-                    const moveX = (xPercent - 50) * 0.25; 
-                    const moveY = (yPercent - 50) * 0.25;
-                    
-                    btn.style.setProperty('--tx', `${moveX}px`);
-                    btn.style.setProperty('--ty', `${moveY}px`);
-                    btn.style.setProperty('--skewX', `${moveX * 0.15}deg`);
-                    btn.style.setProperty('--skewY', `${moveY * 0.15}deg`);
-                    btn.style.setProperty('--scale', `1.05`);
-
-                    // Yazının sıvı gibi dağılması/bulanıklaşması (Daha estetik olması için bulanıklık değeri düşürüldü)
-                    const blurIntensity = (Math.abs(moveX) + Math.abs(moveY)) * 0.08; 
-                    btn.style.setProperty('--text-blur', `${blurIntensity}px`);
-                    btn.style.setProperty('--ts-1-x', `${moveX * 0.4}px`);
-                    btn.style.setProperty('--ts-1-y', `${moveY * 0.4}px`);
-                    btn.style.setProperty('--ts-2-x', `${-moveX * 0.2}px`);
-                    btn.style.setProperty('--ts-2-y', `${-moveY * 0.2}px`);
-                });
-                
-                btn.addEventListener('mouseleave', () => {
-                    // İmleç çıkınca varsayılan dengeli ayarlara dönüş
-                    btn.style.setProperty('--rx', `24px`);
-                    btn.style.setProperty('--ry', `24px`);
-                    btn.style.setProperty('--rz', `24px`);
-                    btn.style.setProperty('--rw', `24px`);
-                    btn.style.setProperty('--tx', `0px`);
-                    btn.style.setProperty('--ty', `0px`);
-                    btn.style.setProperty('--skewX', `0deg`);
-                    btn.style.setProperty('--skewY', `0deg`);
-                    btn.style.setProperty('--scale', `1`);
-                    
-                    // Bulanıklık ve dağılmayı sıfırla
-                    btn.style.setProperty('--text-blur', `0px`);
-                    btn.style.setProperty('--ts-1-x', `0px`);
-                    btn.style.setProperty('--ts-1-y', `0px`);
-                    btn.style.setProperty('--ts-2-x', `0px`);
-                    btn.style.setProperty('--ts-2-y', `0px`);
-                });
-            });
-        });
-    </script>
 </body>
 </html>
